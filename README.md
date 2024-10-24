@@ -1,28 +1,28 @@
-# 📊 SISTEMA DE ANÁLISE DE DADOS
+# 📊 Sistema De Análise De Dados
 
-## 📝 DESCRIÇÃO
-ESTE PROJETO FOI DESENVOLVIDO PARA A FECOMÉRCIO COM O OBJETIVO DE CRIAR UM SISTEMA ROBUSTO DE ANÁLISE DE DADOS. ATRAVÉS DO USO DE FERRAMENTAS PODEROSAS COMO PYTHON, PANDAS E POWER BI, ELE PERMITE O PROCESSAMENTO E A ANÁLISE EFICAZ DE GRANDES VOLUMES DE DADOS, FORNECENDO INSIGHTS VALIOSOS PARA A TOMADA DE DECISÕES ESTRATÉGICAS DA ORGANIZAÇÃO. A ETL DO SISTEMA REALIZA A EXTRAÇÃO DE DADOS DE DIFERENTES APIS E ARQUIVOS CSV/JSON, TRANSFORMA ESSAS INFORMAÇÕES E AS ARMAZENA EM UM BANCO DE DADOS SQLITE PARA USO POSTERIOR NAS ANÁLISES.
+## 📝 Descrição
+Este Projeto Foi Desenvolvido Para A Fecomércio Com O Objetivo De Criar Um Sistema Robusto De Análise De Dados. Através Do Uso De Ferramentas Poderosas Como Python, Pandas E Power BI, Ele Permite O Processamento E A Análise Eficaz De Grandes Volumes De Dados, Fornecendo Insights Valiosos Para A Tomada De Decisões Estratégicas Da Organização. A Etl Do Sistema Realiza A Extração De Dados De Diferentes Apis E Arquivos Csv/Json, Transforma Essas Informações E As Armazena Em Um Banco De Dados Sqlite Para Uso Posterior Nas Análises.
 
-## 🚀 FUNCIONALIDADES
-- **📂 EXTRAÇÃO DE DADOS**: COLETA INFORMAÇÕES DE MÚLTIPLAS FONTES, COMO APIS DO IBGE E BANCO CENTRAL.
-- **🛠️ TRANSFORMAÇÃO DE DADOS**: REALIZA A MANIPULAÇÃO E LIMPEZA DOS DADOS USANDO PANDAS, GARANTINDO QUE OS DADOS ESTEJAM PRONTOS PARA ANÁLISE.
-- **💾 ARMAZENAMENTO DE DADOS**: OS DADOS TRANSFORMADOS SÃO SALVOS EM UM BANCO DE DADOS SQLITE PARA CONSULTAS FUTURAS.
-- **📊 VISUALIZAÇÃO DE DADOS**: INTEGRAÇÃO COM O POWER BI PARA CRIAR RELATÓRIOS INTERATIVOS E DASHBOARDS PERSONALIZADOS, FACILITANDO A VISUALIZAÇÃO DE TENDÊNCIAS E MÉTRICAS IMPORTANTES.
+## 🚀 Funcionalidades
+- **📂 Extração De Dados**: Coleta Informações De Múltiplas Fontes, Como Apis Do Ibge E Banco Central.
+- **🛠️ Transformação De Dados**: Realiza A Manipulação E Limpeza Dos Dados Usando Pandas, Garantindo Que Os Dados Estejam Prontos Para Análise.
+- **💾 Armazenamento De Dados**: Os Dados Transformados São Salvados Em Um Banco De Dados Sqlite Para Consultas Futuras.
+- **📊 Visualização De Dados**: Integração Com O Power BI Para Criar Relatórios Interativos E Dashboards Personalizados, Facilitando A Visualização De Tendências E Métricas Importantes.
 
-## 🛠️ TECNOLOGIAS UTILIZADAS
-- **🐍 PYTHON**: LINGUAGEM DE PROGRAMAÇÃO PRINCIPAL, UTILIZADA PARA AUTOMAÇÃO E MANIPULAÇÃO DE DADOS.
-- **📊 PANDAS**: BIBLIOTECA DE ANÁLISE DE DADOS QUE FACILITA O TRATAMENTO DE GRANDES VOLUMES DE INFORMAÇÃO.
-- **💻 POWER BI**: FERRAMENTA DE VISUALIZAÇÃO QUE TRANSFORMA OS DADOS EM GRÁFICOS E DASHBOARDS INTERATIVOS.
-- **🗄️ SQLITE**: BANCO DE DADOS LEVE UTILIZADO PARA ARMAZENAR OS DADOS PROCESSADOS.
-- **🌐 APIS**: DADOS EXTRAÍDOS DE APIS PÚBLICAS, COMO IBGE E BANCO CENTRAL, EM FORMATOS JSON E CSV.
+## 🛠️ Tecnologias Utilizadas
+- **🐍 Python**: Linguagem De Programação Principal, Utilizada Para Automação E Manipulação De Dados.
+- **📊 Pandas**: Biblioteca De Análise De Dados Que Facilita O Tratamento De Grandes Volumes De Informação.
+- **💻 Power BI**: Ferramenta De Visualização Que Transforma Os Dados Em Gráficos E Dashboards Interativos.
+- **🗄️ Sqlite**: Banco De Dados Leve Utilizado Para Armazenar Os Dados Processados.
+- **🌐 Apis**: Dados Extraídos De Apis Públicas, Como Ibge E Banco Central, Em Formatos Json E Csv.
 
-## 📂 ESTRUTURA DO PROJETO
-- `/DATASETS/CSV`: PASTA DESTINADA AO ARMAZENAMENTO DOS ARQUIVOS CSV EXTRAÍDOS E TRANSFORMADOS.
-- `FECOMDB.DB`: BANCO DE DADOS SQLITE ONDE OS DADOS PROCESSADOS SÃO ARMAZENADOS.
-- `README.MD`: DOCUMENTAÇÃO DO PROJETO COM DETALHES SOBRE AS FUNCIONALIDADES E TECNOLOGIAS.
+## 📂 Estrutura Do Projeto
+- `/Datasets/Csv`: Pasta Destinada Ao Armazenamento Dos Arquivos Csv Extraídos E Transformados.
+- `Fecomdb.db`: Banco De Dados Sqlite Onde Os Dados Processados São Armazenados.
+- `Readme.md`: Documentação Do Projeto Com Detalhes Sobre As Funcionalidades E Tecnologias.
 
-## 🛠️ COMO UTILIZAR
-1. CLONE O REPOSITÓRIO PARA A SUA MÁQUINA.
-2. CERTIFIQUE-SE DE TER O PYTHON E O CONDA INSTALADOS.
-3. CONFIGURE O AMBIENTE COM TODAS AS DEPENDÊNCIAS.
-4. EXECUTE A ETL PARA INICIAR O PROCESSO DE EXTRAÇÃO, TRANSFORMAÇÃO E CARREGAMENTO DE DADOS.
+## 🛠️ Como Utilizar
+1. Clone O Repositório Para A Sua Máquina.
+2. Certifique-Se De Ter O Python E O Conda Instalados.
+3. Configure O Ambiente Com Todas As Dependências.
+4. Execute A Etl Para Iniciar O Processo De Extração, Transformação E Carregamento De Dados.
