@@ -3,17 +3,16 @@ import json
 import pandas as pd
 import sqlite3
 import os
-import shutil  # Para mover arquivos
 
-# Diretório onde os arquivos serão salvos
+# Diretório onde o arquivo será salvo
 directory = "datasets"
-db_directory = os.path.join(directory, "db")  # Diretório para o banco de dados
+db_directory = os.path.join(directory, "db")
 
-# Verifica se o diretório já existe, caso contrário, cria o diretório
+# Verifica se o diretório 'datasets' já existe, caso contrário, cria o diretório
 if not os.path.exists(directory):
     os.makedirs(directory)
 
-# Cria a pasta "db" dentro do diretório "datasets"
+# Verifica se o diretório 'db' já existe, caso contrário, cria o diretório
 if not os.path.exists(db_directory):
     os.makedirs(db_directory)
 
@@ -24,6 +23,9 @@ class etlBcb:
         self.df = None
 
     def requisicao_api(self):
+        """
+        Método GET para a API e armazenar a resposta.
+        """
         try:
             resposta = requests.get(self.api_link)
             if resposta.status_code == 200:
@@ -34,29 +36,50 @@ class etlBcb:
         except Exception as e:
             print('Erro ao fazer a requisição:', e)
 
+    def detectar_estrutura_json(self):
+        """
+        Método para detectar a estrutura do JSON.
+        """
+        # Verifica se a chave 'resultados' e 'series' existem
+        if isinstance(self.dados, list) and 'resultados' in self.dados[0] and 'series' in self.dados[0]['resultados'][0]:
+            return 'nova_serie'
+        
     def transformar_dados(self, chave_json):
+        """
+        Método para transformar os dados JSON em um DataFrame pandas.
+        """
         if self.dados:
             try:
-                data = self.dados[chave_json]
-                self.df = pd.json_normalize(data)
+                estrutura = self.detectar_estrutura_json()
 
-                if 'trimestre' in self.df.columns:
-                    print('Coluna "trimestre" encontrada, convertendo para datas...')
-                    self.df['trimestre'] = self.df['trimestre'].astype(str)
-                    self.df['data'] = self.df['trimestre'].apply(self.trimestre_para_data)
-                    self.df['data'] = self.df['data'].dt.date  
-                if 'AnoMes' in self.df.columns:
-                    print('Coluna "AnoMes" encontrada, convertendo para datas...')
-                    self.df['AnoMes'] = self.df['AnoMes'].astype(str)
-                    self.df['data'] = self.df['AnoMes'].apply(self.anoMes_para_data)
-                    self.df['data'] = self.df['data'].dt.date  
-                if 'Data' in self.df.columns:
-                    print('Coluna "Data" encontrada, convertendo para datas...')
-                    self.df['Data'] = self.df['Data'].astype(str)
-                    self.df['Data'] = pd.to_datetime(self.df['Data']).dt.date
+                if estrutura == 'nova_serie':
+                    # Processamento para a nova estrutura com 'series'
+                    data_series = self.dados[0]['resultados'][0]['series'][0]['serie']
+                    # Transformando a série de dados em um DataFrame
+                    self.df = pd.DataFrame(list(data_series.items()), columns=['Data', 'Valor'])
+                    print('Transformação concluída para a nova estrutura com series.')
                 else:
-                    print('Coluna "trimestre" não encontrada nos dados.')
-                print('Transformação concluída.')
+                    data = self.dados[chave_json]
+                    self.df = pd.json_normalize(data)
+
+                    # Verificar se a coluna 'trimestre' está presente e converter
+                    if 'trimestre' in self.df.columns:
+                        print('Coluna "trimestre" encontrada, convertendo para datas...')
+                        self.df['trimestre'] = self.df['trimestre'].astype(str)
+                        self.df['data'] = self.df['trimestre'].apply(self.trimestre_para_data)
+                        self.df['data'] = self.df['data'].dt.date  # Converte para o formato de data sem hora
+                    if 'AnoMes' in self.df.columns:
+                        print('Coluna "AnoMes" encontrada, convertendo para datas...')
+                        self.df['AnoMes'] = self.df['AnoMes'].astype(str)
+                        self.df['data'] = self.df['AnoMes'].apply(self.anoMes_para_data)
+                        self.df['data'] = self.df['data'].dt.date  # Converte para o formato de data sem hora
+                    if 'Data' in self.df.columns:
+                        print('Coluna "Data" encontrada, convertendo para datas...')
+                        self.df['Data'] = self.df['Data'].astype(str)
+                        self.df['Data'] = pd.to_datetime(self.df['Data']).dt.date
+                    else:
+                        print('Coluna "trimestre" não encontrada nos dados.')
+                    print('Transformação concluída.')
             except KeyError:
                 print(f'Chave "{chave_json}" não encontrada nos dados JSON.')
             except Exception as e:
@@ -66,6 +89,9 @@ class etlBcb:
 
     @staticmethod
     def trimestre_para_data(trimestre):
+        """
+        Função para converter o formato de trimestre para data.
+        """
         try:
             ano = int(str(trimestre)[:4])
             trimestre_num = int(str(trimestre)[-1])
@@ -73,48 +99,44 @@ class etlBcb:
             return pd.to_datetime(f"{ano}-{mes:02d}-01")
         except ValueError:
             print(f"Erro ao converter o trimestre: {trimestre}")
-            return pd.NaT
+            return pd.NaT  # Retorna data nula se houver erro
 
     @staticmethod
     def anoMes_para_data(AnoMes):
+        """
+        Função para converter o formato de AnoMes (ex: 202202) para data.
+        """
         try:
-            ano = int(str(AnoMes)[:4])  
-            mes = int(str(AnoMes)[4:6])  
-            return pd.to_datetime(f"{ano}-{mes:02d}-01")  
+            ano = int(str(AnoMes)[:4])  # Ano nos primeiros 4 caracteres
+            mes = int(str(AnoMes)[4:6])  # Mês nos últimos 2 caracteres
+            return pd.to_datetime(f"{ano}-{mes:02d}-01")  # Formata como 'YYYY-MM-01'
         except ValueError:
             print(f"Erro ao converter o mês/ano: {AnoMes}")
-            return pd.NaT
+            return pd.NaT  # Retorna data nula se houver erro
 
     def salvar_sqlite(self, nome_tabela):
-        nome_banco = 'Fecomdb.db'
+        """
+        Método para salvar o DataFrame transformado em um banco de dados SQLite.
+        """
+        nome_banco = os.path.join(db_directory, 'Fecomdb.db')
         if self.df is not None:
             try:
                 conexao = sqlite3.connect(nome_banco)
                 self.df.to_sql(nome_tabela, conexao, if_exists='replace', index=False)
                 conexao.close()
                 print(f'Dados salvos na tabela "{nome_tabela}" do banco de dados "{nome_banco}".')
-                
-                # Move o banco de dados para a pasta "db"
-                destination_path = os.path.join(db_directory, nome_banco)
-                
-                # Verifica se o arquivo já existe e lida com isso
-                if os.path.exists(destination_path):
-                    # Se existir, remove o arquivo antigo
-                    os.remove(destination_path)
-                    print(f'Arquivo existente removido: {destination_path}')
-                
-                shutil.move(nome_banco, destination_path)
-                print(f'Banco de dados movido para a pasta "{db_directory}".')
-                
             except Exception as e:
                 print('Erro ao salvar os dados no banco de dados SQLite:', e)
         else:
             print('Nenhum dado para salvar no banco de dados.')
 
     def salvar_csv(self, nome_arquivo):
+        """
+        Método para salvar o CSV.
+        """
         if self.df is not None:
             try:
-                self.df.to_csv(f'{directory}/{nome_arquivo}', sep=';', decimal=',', encoding='utf-8-sig')
+                self.df.to_csv(os.path.join(directory, nome_arquivo), sep=';', decimal=',', encoding='utf-8-sig')
                 print(f'Dados salvos no arquivo CSV "{nome_arquivo}".')
             except Exception as e:
                 print('Erro ao salvar o CSV:', e)
@@ -122,7 +144,17 @@ class etlBcb:
             print('Nenhum dado no CSV.')
 
     def executar_etl(self, chave_json, nome_tabela, nome_arquivo):
+        """
+        Método para executar todo o processo de ETL.
+        """
+        # Executar extração
         self.requisicao_api()
+
+        # Transformar os dados
         self.transformar_dados(chave_json)
+
+        # Salvar no banco SQLite
         self.salvar_sqlite(nome_tabela)
+
+        # Salvar em CSV
         self.salvar_csv(nome_arquivo)

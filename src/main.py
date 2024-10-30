@@ -42,17 +42,17 @@ class Main:
         # PMS - VENDAS
         url = 'https://servicodados.ibge.gov.br/api/v3/agregados/8688/periodos/201101-202407/variaveis/11623?localidades=N1[all]&classificacao=11046[56726]|12355[all]'
         etl = etlBcb(url)
-        etl.executar_etl('', 'PMS_VENDAS', 'PMS_VENDAS.csv') 
+        etl.executar_etl('resultados', 'PMS_VENDAS', 'PMS_VENDAS.csv') 
 
         # PMS - VENDAS ESTADOS
         url = 'https://servicodados.ibge.gov.br/api/v3/agregados/8693/periodos/201101-202407/variaveis/11623?localidades=N3[all]&classificacao=11046[56726]|12355[all]'
         etl = etlBcb(url)
-        etl.executar_etl('', 'PMS_VENDAS_ESTADOS', 'PMS_VENDAS_ESTADOS.csv') 
+        etl.executar_etl('resultados', 'PMS_VENDAS_ESTADOS', 'PMS_VENDAS_ESTADOS.csv') 
 
         # PMS - CARGAS
         url = 'https://servicodados.ibge.gov.br/api/v3/agregados/8695/periodos/201101-202407/variaveis/11623?localidades=N1[all]&classificacao=11046[56726]|12355[56724]'
         etl = etlBcb(url)
-        etl.executar_etl('', 'PMS_CARGAS', 'PMS_CARGAS.csv') 
+        etl.executar_etl('resultados', 'PMS_CARGAS', 'PMS_CARGAS.csv') 
 
 
 etl_main = Main()
