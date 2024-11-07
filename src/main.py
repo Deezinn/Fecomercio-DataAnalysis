@@ -1,5 +1,5 @@
 from etlbc import *
-from pmsVendas import *
+from pmsVendasEstado import *
 
 class Main: 
     def __init__(self):
@@ -36,7 +36,7 @@ class Main:
         
         url = "https://servicodados.ibge.gov.br/api/v3/agregados/8693/periodos/201102-202407/variaveis/11623?localidades=N3[all]&classificacao=11046[56726]|12355[all]"
         etl = PMSVendas(url)
-        etl.executar_etl('resultados', 'pmsVendas', 'pmsVendas.csv')
+        etl.executar_etl('resultados', 'pmsVendasEstado', 'pmsVendasEstado.csv')
 
 etl_main = Main()
 etl_main.iniciar_etl()
