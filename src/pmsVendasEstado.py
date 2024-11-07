@@ -14,7 +14,7 @@ if not os.path.exists(base_directory):
 if not os.path.exists(db_directory):
     os.makedirs(db_directory)
 
-class PMSVendas:
+class PMSVendasEstado:
     def __init__(self, api_link):
         self.api_link = api_link
         self.dados = None

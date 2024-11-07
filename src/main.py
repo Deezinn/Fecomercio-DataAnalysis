@@ -1,5 +1,7 @@
 from etlbc import *
+from pmsVendas import *
 from pmsVendasEstado import *
+from pmsCargaBrasil import *
 
 class Main: 
     def __init__(self):
@@ -35,8 +37,16 @@ class Main:
         etl.executar_etl('value', 'MeiosPagamentosTrimestral', 'MeiosPagamentosTrimestral.csv')
         
         url = "https://servicodados.ibge.gov.br/api/v3/agregados/8693/periodos/201102-202407/variaveis/11623?localidades=N3[all]&classificacao=11046[56726]|12355[all]"
-        etl = PMSVendas(url)
+        etl = PMSVendasEstado(url)
         etl.executar_etl('resultados', 'pmsVendasEstado', 'pmsVendasEstado.csv')
+        
+        url = 'https://servicodados.ibge.gov.br/api/v3/agregados/8693/periodos/201102-202407/variaveis/11623?localidades=N3[all]&classificacao=11046[56726]|12355[all]'
+        etl = PMSVendas(url)
+        etl.executar_etl('resultados', 'pmsVendas', 'pmsVendas.csv')
+        
+        url = 'https://servicodados.ibge.gov.br/api/v3/agregados/8695/periodos/201102-202407/variaveis/11623?localidades=N1[all]&classificacao=11046[56726]|12355[56724]'
+        etl = PMSCargaBrasil(url)
+        etl.executar_etl('pmsCargaBrasil', 'pmsCargaBrasil.csv')
 
 etl_main = Main()
 etl_main.iniciar_etl()
