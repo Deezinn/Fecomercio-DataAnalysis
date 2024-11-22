@@ -14,7 +14,7 @@ if not os.path.exists(base_directory):
 if not os.path.exists(db_directory):
     os.makedirs(db_directory)
 
-class PMSVendasEstado:
+class PMSVendasEstados:
     def __init__(self, api_link):
         self.api_link = api_link
         self.dados = None
@@ -35,38 +35,40 @@ class PMSVendasEstado:
     def transformar_dados(self, chave_json='resultados'):
         """
         Método para transformar os dados JSON em um DataFrame pandas.
+        Substituído pelo novo código fornecido.
         """
         if self.dados:
             try:
                 # Acessa o primeiro item de `self.dados` se for uma lista
-                data = self.dados[0] if isinstance(self.dados, list) else self.dados
-                
-                # Obtém o conteúdo da chave "resultados"
-                resultados = data.get(chave_json, [])
-                
-                # Verifica se `resultados` não está vazio
-                if resultados:
-                    # Extrair todas as séries e localizações
-                    series_data = []
-                    for resultado in resultados:
-                        if 'series' in resultado:
-                            for serie_info in resultado['series']:
-                                # Extraindo as informações de localidade e série
-                                for serie in serie_info['serie']:
-                                    localidade_nome = serie_info['localidade']['nome']
-                                    serie_valor = serie
-                                    series_data.append({
-                                        'localidade_nome': localidade_nome,
-                                        'serie': serie_valor
-                                    })
+                data2 = self.dados[0] if isinstance(self.dados, list) else self.dados
 
-                    # Cria um DataFrame com todos os dados das séries
-                    self.df = pd.DataFrame(series_data)
+                # Normaliza os dados da chave "resultados"
+                df2 = pd.json_normalize(data2['resultados'][0])
 
-                    # Salva o DataFrame transformado
-                    print('Transformação concluída.')
-                else:
-                    print(f'Nenhum dado encontrado na chave "{chave_json}".')
+                # Dicionário para armazenar os dados extraídos
+                series_dict2 = {}
+
+                # Iterar sobre as séries para extrair as localidades e suas respectivas séries temporais
+                for j in range(len(df2['series'][0])):
+                    # Extrair o nome da localidade
+                    localidade = df2['series'][0][j]['localidade']['nome']
+
+                    # Extrair os valores da série para essa localidade
+                    serie_valores = df2['series'][0][j]['serie']
+
+                    # Adicionar a série ao dicionário com o nome da localidade
+                    series_dict2[localidade] = serie_valores
+
+                # Criar um DataFrame com o dicionário de séries
+                self.df = pd.DataFrame(series_dict2)
+
+                # Definir a coluna de Data como índice (anos-meses)
+                self.df.index = df2['series'][0][0]['serie'].keys()
+
+                # Certificar que o índice está no formato datetime para futuras operações
+                self.df.index = pd.to_datetime(self.df.index, format='%Y%m')
+
+                print('Transformação concluída.')
             except KeyError as e:
                 print(f'Chave não encontrada: {e}')
             except Exception as e:
@@ -87,7 +89,7 @@ class PMSVendasEstado:
                         self.df[coluna] = self.df[coluna].apply(lambda x: json.dumps(x) if isinstance(x, list) else x)
             
                 with sqlite3.connect(nome_banco) as conexao:
-                    self.df.to_sql(nome_tabela, conexao, if_exists='replace', index=False)
+                    self.df.to_sql(nome_tabela, conexao, if_exists='replace', index=True)
                 print(f'Dados salvos na tabela "{nome_tabela}" do banco de dados "{nome_banco}".')
             except Exception as e:
                 print('Erro ao salvar os dados no banco de dados SQLite:', e)
@@ -95,7 +97,7 @@ class PMSVendasEstado:
             print('Nenhum dado para salvar no banco de dados.')
 
 
-    def executar_etl(self, chave_json, nome_tabela, nome_arquivo):
+    def executar_etl(self, chave_json, nome_tabela):
         """
         Método para executar todo o processo de ETL.
         """
@@ -107,14 +109,4 @@ class PMSVendasEstado:
 
         # Salvar no banco SQLite
         self.salvar_sqlite(nome_tabela)
-
-        # Salvar em CSV
-        self.salvar_csv(nome_arquivo)
-
-
-
-
-
-
-
 
