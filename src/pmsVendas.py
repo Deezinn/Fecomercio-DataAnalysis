@@ -96,19 +96,6 @@ class PMSVendas:
         else:
             print('Nenhum dado para salvar no banco de dados.')
 
-    def salvar_csv(self, nome_arquivo):
-        """
-        Método para salvar o CSV.
-        """
-        if self.df is not None:
-            try:
-                caminho_csv = os.path.join(base_directory, nome_arquivo)
-                self.df.to_csv(caminho_csv, sep=';', decimal=',', encoding='utf-8-sig')
-                print(f'Dados salvos no arquivo CSV "{caminho_csv}".')
-            except Exception as e:
-                print('Erro ao salvar o CSV:', e)
-        else:
-            print('Nenhum dado no CSV.')
 
     def executar_etl(self, chave_json, nome_tabela, nome_arquivo):
         """
