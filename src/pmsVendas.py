@@ -14,7 +14,7 @@ if not os.path.exists(base_directory):
 if not os.path.exists(db_directory):
     os.makedirs(db_directory)
 
-class PMSVendas:
+class PmsVendas:
     def __init__(self, api_link):
         self.api_link = api_link
         self.dados = None
@@ -34,41 +34,47 @@ class PMSVendas:
 
     def transformar_dados(self, chave_json='resultados'):
         """
-        Método para transformar os dados JSON em um DataFrame pandas.
-        Substituído pelo novo código fornecido.
+        Método para transformar os dados JSON em um DataFrame pandas e organizar as séries.
         """
         if self.dados:
             try:
                 # Acessa o primeiro item de `self.dados` se for uma lista
-                data2 = self.dados[0] if isinstance(self.dados, list) else self.dados
+                data = self.dados[0] if isinstance(self.dados, list) else self.dados
+                
+                # Obtém o conteúdo da chave "resultados"
+                resultados = data.get(chave_json, [])
+                
+                # Verifica se `resultados` não está vazio
+                if resultados:
+                    series_dict = {}
+                    for i in range(len(resultados)):
+                        # Extrair o nome da coluna
+                        nome_coluna = list(resultados[i]['classificacoes'][1]['categoria'].values())[0]
 
-                # Normaliza os dados da chave "resultados"
-                df2 = pd.json_normalize(data2['resultados'][0])
+                        # Extrair os valores da série
+                        serie_valores = resultados[i]['series'][0]['serie']
 
-                # Dicionário para armazenar os dados extraídos
-                series_dict2 = {}
+                        # Adicionar a série ao dicionário
+                        series_dict[nome_coluna] = serie_valores
 
-                # Iterar sobre as séries para extrair as localidades e suas respectivas séries temporais
-                for j in range(len(df2['series'][0])):
-                    # Extrair o nome da localidade
-                    localidade = df2['series'][0][j]['localidade']['nome']
+                    # Criar um DataFrame a partir do dicionário de séries
+                    df_series = pd.DataFrame(series_dict)
 
-                    # Extrair os valores da série para essa localidade
-                    serie_valores = df2['series'][0][j]['serie']
+                    # Adicionar a coluna de Data como índice (anos-meses)
+                    df_series.index = resultados[0]['series'][0]['serie'].keys()
 
-                    # Adicionar a série ao dicionário com o nome da localidade
-                    series_dict2[localidade] = serie_valores
+                    # Certificar que o índice está no formato datetime para posterior análise
+                    df_series.index = pd.to_datetime(df_series.index, format='%Y%m')
 
-                # Criar um DataFrame com o dicionário de séries
-                self.df = pd.DataFrame(series_dict2)
+                    # Renomear o índice para "Data"
+                    df_series.index.name = "Data"
 
-                # Definir a coluna de Data como índice (anos-meses)
-                self.df.index = df2['series'][0][0]['serie'].keys()
+                    # Atribuir ao atributo da classe
+                    self.df = df_series
 
-                # Certificar que o índice está no formato datetime para futuras operações
-                self.df.index = pd.to_datetime(self.df.index, format='%Y%m')
-
-                print('Transformação concluída.')
+                    print('Transformação concluída.')
+                else:
+                    print(f'Nenhum dado encontrado na chave "{chave_json}".')
             except KeyError as e:
                 print(f'Chave não encontrada: {e}')
             except Exception as e:
@@ -83,11 +89,6 @@ class PMSVendas:
         nome_banco = os.path.join(db_directory, 'Fecomdb.db')
         if self.df is not None:
             try:
-                # Converte listas para strings para compatibilidade com SQLite
-                for coluna in self.df.columns:
-                    if isinstance(self.df[coluna].iloc[0], list):
-                        self.df[coluna] = self.df[coluna].apply(lambda x: json.dumps(x) if isinstance(x, list) else x)
-            
                 with sqlite3.connect(nome_banco) as conexao:
                     self.df.to_sql(nome_tabela, conexao, if_exists='replace', index=True)
                 print(f'Dados salvos na tabela "{nome_tabela}" do banco de dados "{nome_banco}".')
@@ -96,8 +97,7 @@ class PMSVendas:
         else:
             print('Nenhum dado para salvar no banco de dados.')
 
-
-    def executar_etl(self, chave_json, nome_tabela, nome_arquivo):
+    def executar_etl(self, chave_json, nome_tabela):
         """
         Método para executar todo o processo de ETL.
         """
@@ -109,6 +109,3 @@ class PMSVendas:
 
         # Salvar no banco SQLite
         self.salvar_sqlite(nome_tabela)
-
-        # Salvar em CSV
-        self.salvar_csv(nome_arquivo)

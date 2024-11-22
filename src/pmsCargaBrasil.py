@@ -86,7 +86,7 @@ class PMSCargaBrasil:
         else:
             print('Nenhum dado para salvar no banco de dados.')
 
-    def executar_etl(self, nome_tabela, nome_arquivo):
+    def executar_etl(self, nome_tabela):
         """
         Método para executar todo o processo de ETL.
         """
@@ -98,7 +98,3 @@ class PMSCargaBrasil:
 
         # Salvar no banco SQLite
         self.salvar_sqlite(nome_tabela)
-
-        # Salvar em CSV
-        self.salvar_csv(nome_arquivo)
-
