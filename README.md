@@ -21,6 +21,29 @@ Este projeto foi desenvolvido para a Fecomércio com o objetivo de criar um sist
 - `fecomdb.db`: Banco de dados SQLite onde os dados processados são armazenados.
 - `readme.md`: Documentação do projeto com detalhes sobre as funcionalidades e tecnologias.
 
+## 📘 Documentação  
+
+A documentação adicional do projeto detalha:  
+
+- **Descrição Geral**:  
+  Este projeto foi desenvolvido com o objetivo de consolidar e analisar uma ampla gama de dados econômicos e financeiros, abrangendo indicadores macroeconômicos (como IPCA e Taxa Selic) e transações financeiras realizadas por diferentes meios de pagamento, como PIX, boletos, TEDs e cartões de crédito/débito.  
+
+- **Estrutura dos Painéis**:  
+  Os dashboards foram projetados para destacar as relações entre as variáveis econômicas e o comportamento dos consumidores em diferentes períodos. Eles oferecem uma interface moderna e interativa, permitindo:  
+  - **Análises históricas**.  
+  - **Projeções futuras**.  
+  - Personalização por meio de **filtros dinâmicos**.  
+
+- **Navegação no Dashboard**:  
+  Na página inicial, os usuários podem acessar diferentes abas, cada uma dedicada a um tema específico:  
+  - **Cartões**: Dados sobre volume de transações e tendências de uso.  
+  - **Meios de Pagamento**: Comparativo entre métodos como PIX, boletos e TEDs.  
+  - **Pesquisa Mensal de Serviço**: Análises setoriais detalhadas.  
+  - **Expectativa de Mercado**: Indicadores de confiança econômica e projeções de mercado.  
+
+  Cada aba é dividida em seções para facilitar a navegação e a compreensão dos dados apresentados.  
+  
+
 ## 🛠️ Como Utilizar
 1. Clone o repositório para a sua máquina.
 2. Certifique-se de ter o Python e o Conda instalados.
