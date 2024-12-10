@@ -7,7 +7,8 @@ __pycache__/
 *.so
 
 # Distribution / packaging
-.db*
+datasets/.db*
+datasets/db/Fecomdb.db
 .Python
 build/
 develop-eggs/
